@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragments/componentes/plantilla :: head"></head>
+
+<body class="horizontal-layout horizontal-menu 2-columns  " data-open="hover" data-menu="horizontal-menu" data-col="2-columns">
+
+	<nav th:replace="fragments/componentes/plantilla :: header"></nav>
+
+	<div th:replace="fragments/componentes/plantilla :: menu"></div>
+
+
+
+
+	<div class="app-content content">
+		<div class="content-overlay"></div>
+		<div class="content-wrapper">
+			<div class="content-header row">
+				<div class="content-header-left col-md-6 col-12 mb-2">
+					<h3 class="content-header-title">Gestión de Usuarios</h3>
+					<div class="row breadcrumbs-top">
+						<div class="breadcrumb-wrapper col-12">
+							<ol class="breadcrumb">
+								<li class="breadcrumb-item">
+									<a href="/">Home</a>
+								</li>
+								<li class="breadcrumb-item active">Usuarios</li>
+							</ol>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+			<div class="content-body">
+				<section id="pagination">
+					<div class="row">
+						<div class="col-12">
+							<div class="card">
+								<div class="card-header">
+									<h4 class="card-title float-left">Listado de Usuarios</h4>
+									<div class="media width-250 float-right mt-2 mt-lg-1">
+										<div class="media-body media-right text-right">
+											<a href="/usuario/formulario" class="btn p-lg-1 btn-primary" style="padding: 5px;"><i class="la la-plus"></i> Crear Usuario</a>
+										</div>
+									</div>
+								</div>
+								<div class="card-body">
+									<div class="card-text">
+										<form th:action="@{/usuario/listado}">
+										
+										<div class="input-group">
+											<input type="text" name="q" class="form-control rounded" placeholder="Buscar..." th:value="${q}" />
+											<span class="btn-group mb-1">
+												<button type="submit" name="search" title="Buscar"  id="search-btn" class="btn btn-success ">
+													<i class="la la-search"></i>
+												</button>
+											</span>
+										</div>
+										</form>
+									</div>
+									<div class="table-responsive">
+										<p th:text="${session.ROL}"></p>
+										<table class="table alt-pagination">
+											<thead class="thead-dark" th:if="${session.ROL == 'ADMINISTRADOR'}">
+												<tr>
+													<th th:replace="fragments/componentes/paginador :: columna(campo=apellido,columna=Apellido)"></th>
+													<th th:replace="fragments/componentes/paginador :: columna(campo=nombre,columna=Nombre)"></th>
+													<th th:replace="fragments/componentes/paginador :: columna(campo=usuario,columna=Usuario)"></th>
+													<th th:replace="fragments/componentes/paginador :: columna(campo=mail,columna=E-Mail)"></th>
+													<th th:replace="fragments/componentes/paginador :: columna(campo=organizacion,columna=Organizacion)"></th>
+													<th>Rol</th>
+													<th th:replace="fragments/componentes/paginador :: columna(campo=ingreso,columna='Último Acceso')"></th>
+													<th th:replace="fragments/componentes/paginador :: columna(campo=modificacion,columna=Modificación)"></th>
+													<th>Acciones</th>
+												</tr>
+											</thead>
+											<thead class="thead-dark" th:if="${session.ROL != 'ADMINISTRADOR'}">
+												<tr>
+													<th th:replace="fragments/componentes/paginador :: columna(campo=apellido,columna=Apellido)"></th>
+													<th th:replace="fragments/componentes/paginador :: columna(campo=nombre,columna=Nombre)"></th>
+													<th th:replace="fragments/componentes/paginador :: columna(campo=usuario,columna=Usuario)"></th>
+													<th th:replace="fragments/componentes/paginador :: columna(campo=mail,columna=E-Mail)"></th>
+													<th>Rol</th>
+													<th th:replace="fragments/componentes/paginador :: columna(campo=ingreso,columna='Último Acceso')"></th>
+													<th th:replace="fragments/componentes/paginador :: columna(campo=modificacion,columna=Modificación)"></th>
+													<th>Acciones</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr th:each="entidad : ${page}">
+													<td class="align-middle">
+														<div class="name" th:text="${entidad.apellido}"></div>
+													</td>
+													<td class="align-middle">
+														<div class="name" th:text="${entidad.nombre}"></div>
+													</td>
+													<td class="align-middle">
+														<div class="name" th:text="${entidad.userName}"></div>
+													</td>
+													<td class="align-middle">
+														<div class="name"><a th:href="${'mailto:' + entidad.mail}" th:text="${entidad.mail}"></a></div>
+													</td>
+													<td class="align-middle" th:if="${session.ROL == 'ADMINISTRADOR'}">
+														<div th:if="${entidad.organizacion != null}" class="name" th:text="${entidad.organizacion.nombre}"></div>
+														<div th:if="${entidad.organizacion == null}" class="name" th:text="''"></div>
+													</td>
+													<td class="align-middle">
+														<div class="name" th:text="${entidad.rol}"></div>
+													</td>
+													<td class="align-middle">
+														<div class="last-login" th:text="${entidad.ingreso} ? ${#dates.format(entidad.ingreso, 'dd-MM-yyyy HH:mm')}"></div>
+													</td>
+													<td class="align-middle">
+														<div class="last-login" th:text="${entidad.modificacion} ? ${#dates.format(entidad.modificacion, 'dd-MM-yyyy HH:mm')}"></div>
+													</td>
+													<td class="align-middle">
+														<div class="option">
+															<a th:href="@{/usuario/formulario(accion=ver,id=__${entidad.id}__)}">
+																<i class="la la-eye default"></i>
+															</a>
+															<a th:href="@{/usuario/formulario(accion=actualizar,id=__${entidad.id}__)}">
+																<i class="la la-pencil success"></i>
+															</a>
+															<a th:href="@{/usuario/formulario(accion=eliminar,id=__${entidad.id}__)}">
+																<i class="la la-trash danger"></i>
+															</a>
+															<a th:href="@{/usuario/formulario(accion=recuperar,id=__${entidad.id}__)}">
+																<i class="la la-undo danger"></i>
+															</a>
+														</div>
+													</td>
+												</tr>
+
+											</tbody>
+										</table>
+
+										<div th:replace="fragments/componentes/paginador :: paginador">...</div>
+
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+			</div>
+		</div>
+	</div>
+
+	<div class="sidenav-overlay"></div>
+	<div class="drag-target"></div>
+
+	<th:block th:replace="fragments/componentes/plantilla :: footer"></th:block>
+	
+	
+
+</body>
+
+</html>

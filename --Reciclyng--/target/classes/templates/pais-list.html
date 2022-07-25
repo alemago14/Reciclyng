@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragments/componentes/plantilla :: head"></head>
+
+<body class="horizontal-layout horizontal-menu 2-columns  " data-open="hover" data-menu="horizontal-menu" data-col="2-columns">
+
+	<nav th:replace="fragments/componentes/plantilla :: header"></nav>
+
+	<nav th:replace="fragments/componentes/plantilla :: menu"></nav>
+
+
+
+
+	<div class="app-content content">
+		<div class="content-overlay"></div>
+		<div class="content-wrapper">
+			<div class="content-header row">
+				<div class="content-header-left col-md-6 col-12 mb-2">
+					<h3 class="content-header-title">Gestión de Países</h3>
+					<div class="row breadcrumbs-top">
+						<div class="breadcrumb-wrapper col-12">
+							<ol class="breadcrumb">
+								<li class="breadcrumb-item">
+									<a href="/">Home</a>
+								</li>
+								<li class="breadcrumb-item active">Países</li>
+							</ol>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+			<div class="content-body">
+				<section id="pagination">
+					<div class="row">
+						<div class="col-12">
+							<div class="card">
+								<div class="card-header">
+									<h4 class="card-title float-left">Listado de Países</h4>
+									<div class="media width-250 float-right mt-2 mt-lg-1">
+										<div class="media-body media-right text-right">
+											<a href="/pais/formulario" class="btn p-lg-1 btn-primary" style="padding: 5px;"><i class="la la-plus"></i> Crear País</a>
+										</div>
+									</div>
+								</div>
+								<div class="card-body">
+									<div class="card-text">
+										<form th:action="@{/pais/listado}">
+										
+										<div class="input-group">
+											<input type="text" name="q" class="form-control rounded" placeholder="Buscar..." th:value="${q}" />
+											<span class="btn-group mb-1">
+												<button type="submit" name="search" title="Buscar"  id="search-btn" class="btn btn-success ">
+													<i class="la la-search"></i>
+												</button>
+											</span>
+										</div>
+										</form>
+									</div>
+									<div class="table-responsive">
+										<table class="table alt-pagination">
+											<thead class="thead-dark">
+												<tr>
+													<th th:replace="fragments/componentes/paginador :: columna(campo=nombre,columna=Nombre)"></th>
+													<th th:replace="fragments/componentes/paginador :: columna(campo=modificacion,columna=Modificación)"></th>
+													<th>Acciones</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr th:each="entidad : ${page}">
+													<td class="align-left">
+														<div class="name" th:text="${entidad.nombre}"></div>
+													</td>
+													<td class="align-middle">
+														<div class="last-login" th:text="${entidad.modificacion} ? ${#dates.format(entidad.modificacion, 'dd-MM-yyyy HH:mm')}"></div>
+													</td>
+													<td class="align-left">
+														<div class="option">
+															<a th:href="@{/pais/formulario(accion=actualizar,id=__${entidad.id}__)}">
+																<i class="la la-pencil success"></i>
+															</a>
+															<a th:href="@{/pais/formulario(accion=eliminar,id=__${entidad.id}__)}">
+																<i class="la la-trash danger"></i>
+															</a>
+														</div>
+													</td>
+												</tr>
+
+											</tbody>
+										</table>
+
+										<div th:replace="fragments/componentes/paginador :: paginador">...</div>
+
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+			</div>
+		</div>
+	</div>
+
+	<div class="sidenav-overlay"></div>
+	<div class="drag-target"></div>
+
+	<nav th:replace="fragments/componentes/plantilla :: footer"></nav>
+
+
+</body>
+
+</html>
